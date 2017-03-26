@@ -1,0 +1,23 @@
+{
+    "typescript.tsdk": "./node_modules/typescript/lib",
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "server/**/*.js": true,
+        "server/**/*.js.map": true
+    },
+    "[typescript]": {
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true
+    },
+    "[markdown]": {
+        "editor.formatOnSave": true,
+        "editor.renderWhitespace": "all",
+        "editor.acceptSuggestionOnEnter": false
+    },
+    "tslint.autoFixOnSave": true,
+    "editor.minimap.enabled": true,
+    "editor.minimap.renderCharacters": true
+}
