@@ -73,7 +73,7 @@ function generateImg(name, width, height) {
         }
     }
     image.write(path.join('outputImg', name), () => {
-        console.log(`${name} saved`);
+        // console.log(`${name} saved`);
     });
 }
 
@@ -122,7 +122,8 @@ getPixels(CONFIG.photo, function (err, pixels) {
         if (i % (1 * mult) == 0) {
             let elapsed = <any>moment() - <any>startTime;
             let eta = moment.duration((elapsed / (i + 1)) * (CONFIG.iterations - i));
-            console.log(`Train: ${Math.floor(10000 * i / CONFIG.iterations) / 100} % | Iteration: ${i} | ETA: ${eta.humanize()}`);
+            let running = moment.duration(elapsed);
+            console.log(`Train: ${Math.floor(10000 * i / CONFIG.iterations) / 100} % | Iteration: ${i} | running: ${running.humanize()} | ETA: ${eta.humanize()}`);
             generateImg(`it-${i}.png`, width, height);
         }
         let err = getErrorRate(pixels, true);
