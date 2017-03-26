@@ -1,8 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export default function argParser(args): { new: boolean, photo: string, iterations: number, photoName: string } {
-    let conf: any = { iterations: 1000 };
+export default function argParser(args): { new: boolean, photo: string, iterations: number, photoName: string, learnRate: number } {
+    let conf: any = {
+        iterations: 1000,
+        learnRate: 0.1
+    };
     for (let i in args) {
         if (args[i] == '--new')
             conf.new = true;
@@ -14,6 +17,10 @@ export default function argParser(args): { new: boolean, photo: string, iteratio
         if (args[i] == '--iterations')
             if (typeof parseInt(args[parseInt(i) + 1]) === 'number')
                 conf.iterations = parseInt(args[parseInt(i) + 1]);
+
+        if (args[i] == '--learnRate')
+            if (typeof parseFloat(args[parseInt(i) + 1]) === 'number')
+                conf.learnRate = parseFloat(args[parseInt(i) + 1]);
     }
     if (!conf.photo)
         throw new Error('Missing --photo');
