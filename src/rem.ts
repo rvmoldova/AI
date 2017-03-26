@@ -2,6 +2,7 @@ import 'ts-helpers';
 import * as fs2 from 'fs';
 import * as path from 'path';
 import * as glob from 'glob';
+import * as moment from 'moment';
 import getPixels = require('get-pixels');
 import Jimp = require('jimp');
 import argParser from './argParser';
@@ -71,7 +72,9 @@ function generateImg(name, width, height) {
             image.setPixelColor(colorHEX, x, y);
         }
     }
-    image.write(path.join('outputImg', name));
+    image.write(path.join('outputImg', name), () => {
+        console.log(`${name} saved`);
+    });
 }
 
 function getErrorRate(pixels, train) {
@@ -110,13 +113,18 @@ getPixels(CONFIG.photo, function (err, pixels) {
     // console.log('gg');
     let width = pixels.shape[0];
     let height = pixels.shape[1];
-    let mult = 10;
+    let mult = CONFIG.iterations / 1000;
+    let startTime = moment();
     if (CONFIG.iterations > 0) {
         console.log(`Start train with ${CONFIG.iterations} iterations with rate ${CONFIG.learnRate}`);
     }
     for (let i = 0; i < CONFIG.iterations; i++) {
-        i % (1 * mult) == 0 ? console.log(i) : null;
-        i % (1 * mult) == 0 ? generateImg(`it-${i}.png`, width, height) : null;
+        if (i % (1 * mult) == 0) {
+            let elapsed = <any>moment() - <any>startTime;
+            let eta = moment.duration((elapsed / (i + 1)) * (CONFIG.iterations - i));
+            console.log(`Train: ${Math.floor(10000 * i / CONFIG.iterations) / 100} % | Iteration: ${i} | ETA: ${eta.humanize()}`);
+            generateImg(`it-${i}.png`, width, height);
+        }
         let err = getErrorRate(pixels, true);
         // i % 10 == 0 ? console.log(err) : null;
     }
