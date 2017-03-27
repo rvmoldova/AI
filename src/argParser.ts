@@ -21,10 +21,12 @@ export default function argParser(args): { new: boolean, photo: string, iteratio
         if (args[i] == '--learnRate')
             if (typeof parseFloat(args[parseInt(i) + 1]) === 'number')
                 conf.learnRate = parseFloat(args[parseInt(i) + 1]);
+
+        // todo: setup neuron layers from CLI
     }
     if (!conf.photo)
         throw new Error('Missing --photo');
-    let phP = conf.photo.split('/');
-    conf.photoName = phP[phP.length - 1];
+    let phP = path.parse(conf.photo).base;
+    conf.photoName = phP;
     return conf;
 }

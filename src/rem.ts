@@ -27,13 +27,16 @@ let overlays: [string] = glob.sync('./outputImg/*').forEach(f => {
 // create the network
 var inputLayer = new Layer(2);
 var hiddenLayer = new Layer(10);
+var hiddenLayer2 = new Layer(5);
 var outputLayer = new Layer(3);
 
 
 inputLayer.project(hiddenLayer);
-hiddenLayer.project(outputLayer);
+hiddenLayer.project(hiddenLayer2);
+hiddenLayer2.project(outputLayer);
 
 let networkBackup: any = {};
+console.log(path.join('backups', `${CONFIG.photoName}.json`));
 if (!CONFIG.new && fs2.existsSync(path.join('backups', `${CONFIG.photoName}.json`))) {
     try {
         networkBackup = JSON.parse(fs2.readFileSync(path.join('backups', `${CONFIG.photoName}.json`), 'utf8'));
@@ -51,7 +54,7 @@ if (networkBackup.neurons && !CONFIG.new) {
     console.log('Create new newtwork');
     myNetwork = new Network({
         input: inputLayer,
-        hidden: [hiddenLayer],
+        hidden: [hiddenLayer, hiddenLayer2],
         output: outputLayer
     });
 }
@@ -109,7 +112,7 @@ function getErrorRate(pixels, train) {
     return 100 * (err.r / (err.r + cor.r) + err.g / (err.g + cor.g) + err.b / (err.b + cor.b)) / 3;
 }
 
-getPixels(CONFIG.photo, function (err, pixels) {
+getPixels(path.resolve(CONFIG.photo), function (err, pixels) {
     // console.log('gg');
     let width = pixels.shape[0];
     let height = pixels.shape[1];
@@ -134,3 +137,10 @@ getPixels(CONFIG.photo, function (err, pixels) {
 });
 
 
+// function graceful() {
+//     console.log('Gracefully stoping AI');
+//     fs2.writeFileSync(path.join('backups', `${CONFIG.photoName}.json`), JSON.stringify(myNetwork.toJSON()));
+// }
+
+// process.on('SIGTERM', graceful);
+// process.on('SIGINT', graceful);
